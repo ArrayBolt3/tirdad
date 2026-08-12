@@ -1,3 +1,9 @@
+tirdad (0:0.3.4-1) unstable; urgency=medium
+
+  * New upstream version (local package).
+
+ -- Patrick Schleizer <adrelanos@whonix.org>  Sat, 01 Aug 2026 08:44:20 +0000
+
 tirdad (0:0.3.3-1) unstable; urgency=medium
 
   * New upstream version (local package).

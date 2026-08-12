@@ -1,3 +1,84 @@
+commit 46afa9c1c5520d3fb8001ce67d0b12dec4bb642d
+Merge: c8c2da9 627b1cd
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Aug 1 04:27:57 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/org-ai-assisted/master'
+
+commit 627b1cd56b9a2ef68efdd782d8c824b199d79e60
+Merge: 62b491b 7778b32
+Author: assisted-by-ai (Bot Account) (Machine Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Fri Jul 31 17:09:58 2026 -0400
+
+    Merge pull request #2 from org-ai-assisted/ai
+
+    Add Coverity Scan lane for the tirdad kernel module
+
+commit 7778b324e3bd02b3f76c4f0247ef8d41b2d10c3b
+Author: claude (dev142 b93fb2c6-e15f-4d45-8566-f3ded893b70e) <noreply@anthropic.com>
+Date:   Fri Jul 31 16:12:44 2026 -0400
+
+    Add Coverity Scan lane for the tirdad kernel module
+
+    tirdad is an out-of-tree Linux kernel module that hot-patches TCP ISN
+    generation - privileged C, exactly Coverity's strength, and the one
+    repo with a C/C++ CodeQL lane but no Coverity.
+
+    - consumer-coverity.yml: byte-identical propagation from
+      developer-meta-files consumer-templates (tag / weekly cron /
+      workflow_dispatch triggers).
+    - dm-consumer.yml coverity section: project-name, canonical-repos,
+      and build-command.
+    - ci/coverity-build.sh: cov-build must wrap the real kbuild compile,
+      because the reusable runs the build-command directly and only tars
+      cov-int (it does not wrap in cov-build itself, unlike the Python
+      default). Reuses the exact header install + Makefile drive as
+      ci/codeql-build.sh, wrapped in cov-build --dir cov-int. Hard-fails
+      on a zero-unit capture so a Coverity run that captured nothing
+      cannot report a false green.
+
+    Coverity project + per-repo COVERITY_SCAN_TOKEN secret provisioned
+    out of band; COVERITY_SCAN_EMAIL is an org-level secret.
+
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+commit 62b491b07de99e6338b65189ad12e010aac63322
+Merge: c8c2da9 0cd4e04
+Author: assisted-by-ai (Bot Account) (Machine Account) <228987186+assisted-by-ai@users.noreply.github.com>
+Date:   Fri Jul 31 15:33:55 2026 -0400
+
+    Merge pull request #1 from org-ai-assisted/ai
+
+    Add CodeQL c-cpp lane for the tirdad kernel module
+
+commit 0cd4e049f711d46ae9e53bcd132bcc957560ed44
+Author: claude (dev142 b93fb2c6-e15f-4d45-8566-f3ded893b70e) <noreply@anthropic.com>
+Date:   Fri Jul 31 15:02:18 2026 -0400
+
+    Add CodeQL c-cpp lane for the tirdad kernel module
+
+    tirdad is a privileged Linux kernel module (module/tirdad.c) that
+    hot-patches TCP ISN generation; it was scanned by nothing.
+
+    - .github/workflows/consumer-codeql-cpp.yml: byte-identical from the
+      developer-meta-files consumer-templates (managed; do not hand-edit).
+    - .github/dm-consumer.yml: codeql-cpp.build-command only.
+    - ci/codeql-build.sh: kbuild compile of module/tirdad.c under CodeQL
+      manual build-mode so the c-cpp extractor traces the source. Installs
+      apt-stable linux-headers-generic (noble 6.8 GA), which satisfies the
+      source LINUX_VERSION_CODE guard so the TCP-ISN hook body is compiled
+      and extracted rather than an empty translation unit, then drives the
+      repo Makefile via a KERNELDIR override. Hard-fails if module/tirdad.o
+      is not produced, to avoid a green lane that extracted nothing.
+
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+commit c8c2da92647d7acc5f4d3cae44103dd70339bb35
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Wed Jun 24 18:06:01 2026 +0000
+
+    bumped changelog version
+
 commit 89b30cb1f8a98f36cb507982669e9aebc945434e
 Merge: 9e3903d 7f462f6
 Author: Patrick Schleizer <adrelanos@whonix.org>
