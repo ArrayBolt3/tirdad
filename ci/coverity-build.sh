@@ -19,9 +19,8 @@
 ## class as an empty CodeQL cpp database.
 ##
 ## Build derivation: mirrors ci/codeql-build.sh exactly (same kernel
-## header install + same 'make -C $(KERNELDIR) M=$(pwd)/module' drive
-## via the repo Makefile). The only additions are the cov-build
-## wrapper and the emitted-units guard.
+## header install + same repo Makefile drive). The only additions are the
+## cov-build wrapper and the emitted-units guard.
 ##
 ## Kernel headers source (per ci/codeql-build.sh):
 ##
@@ -32,11 +31,8 @@
 ## 'linux-headers-generic' (noble main, 6.8 GA) and point KERNELDIR
 ## at it, overriding the repo Makefile's '$(uname -r)' default.
 ##
-## Version-guard note: module/tirdad.c gates the TCP-ISN hook body on
-## LINUX_VERSION_CODE (< 6.12.94, or 6.13.0..6.18.17). The 6.8 GA
-## headers satisfy the first branch, so the security-relevant hook
-## code is the code that gets compiled and captured - not an empty
-## translation unit.
+## There is no scenario in which a build of tirdad has no security-enhancing
+## hook, regardless of kernel version.
 
 set -o errexit
 set -o nounset

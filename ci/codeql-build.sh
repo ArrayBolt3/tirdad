@@ -22,11 +22,8 @@
 ## 'linux-headers-generic' (noble main, 6.8 GA) and point KERNELDIR
 ## at it, overriding the repo Makefile's '$(uname -r)' default.
 ##
-## Version-guard note: module/tirdad.c gates the TCP-ISN hook body on
-## LINUX_VERSION_CODE (< 6.12.94, or 6.13.0..6.18.17). The 6.8 GA
-## headers satisfy the first branch, so the security-relevant hook
-## code is the code that gets compiled and extracted - not an empty
-## translation unit.
+## There is no scenario in which a build of tirdad has no security-enhancing
+## hook, regardless of kernel version.
 
 set -o errexit
 set -o nounset
@@ -58,8 +55,8 @@ if [ ! -d "${kerneldir}" ]; then
   exit 1
 fi
 
-## Drive the repo's own Makefile ('make -C $(KERNELDIR) M=$(pwd)/module'),
-## overriding only KERNELDIR. Compiles module/tirdad.c -> tirdad.o/.ko.
+## Drive the repo's own Makefile, overriding only KERNELDIR. Compiles
+## module/tirdad.c -> tirdad.o/.ko.
 make KERNELDIR="${kerneldir}"
 
 ## Guard against the false-green where the lane reports success while
