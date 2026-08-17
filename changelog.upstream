@@ -1,3 +1,109 @@
+commit c63cc99b12d62049a1416d4e098ecd1fe1e2ce54
+Merge: 9dc0d08 ca13c17
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Aug 15 10:28:02 2026 -0400
+
+    Merge remote-tracking branch 'refs/remotes/ArrayBolt3/arraybolt3/trixie'
+
+commit ca13c17fa7e301204c02b662155cef280dbcd735
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Wed Aug 12 23:04:25 2026 -0400
+
+    comments
+
+commit f9d7850277c82e09fb5de0f4923b49adfcda8614
+Merge: c8c2da9 e52e4a5
+Author: Aaron Rainbolt <arraybolt3@gmail.com>
+Date:   Wed Aug 12 01:19:21 2026 -0400
+
+    Merge branch 'ai' into arraybolt3/trixie
+
+commit e52e4a58b72b519f72a6d417b9d64cdd993f67c8
+Author: claude (dev163 38f9745c-aed1-4fb4-b6ae-9899f20f8de2) <noreply@anthropic.com>
+Date:   Fri Aug 7 14:53:23 2026 -0400
+
+    restore 'set -x' dropped by the strict-mode pass
+
+    The R-010 conversion replaced each script's existing preamble wholesale and did
+    not carry 'set -x' across. That is a silent loss of diagnostic output, and for
+    several of these it is the only output there is:
+
+    - build-time scripts (hardened-kernel build / download / ci_test, tirdad
+      build.sh, initializer-dist chroot-scripts-post.d): the trace IS the build log,
+      so a failing invocation and its expanded arguments become unavailable exactly
+      when they are needed.
+    - boot-time scripts (libvirt-dist, repository-dist-initializer).
+    - scripts whose only messages are 'true "INFO: ..."' lines, which produce
+      nothing on their own -- removing xtrace silences them completely.
+    - test harnesses (tb-updater unit_test, sdwdate-gui fuzzer), where the trace is
+      the point.
+
+    It was also inconsistent: initializer-dist's 80_cleanup kept it while its four
+    siblings in the same directory lost it.
+
+    Nothing asked for this and no commit described it as intentional, so it is
+    restored everywhere it was active.
+
+    Found by codex on initializer-dist. The other 19 files came from auditing the
+    whole pass for the same pattern.
+
+    Testing
+    -------
+
+    Gate exit 0 in an ISOLATED checkout, all eleven packages.
+
+    Audit: ~/strict-pass-tests/audit-stripped-setx.sh, which compares every file
+    changed on an 'ai' branch against org-ai-assisted/master and reports any that
+    had 'set -x' and no longer do.
+
+      before:  examined 43 package(s) on branch ai, 342 changed file(s); 23 stripped
+      after:   examined 43 package(s) on branch ai, 342 changed file(s);  0 stripped
+
+    The audit prints its own coverage, and fails outright if it examines zero
+    packages. Its first version tested '[ -d "$pkg/.git" ]', which is false for a
+    submodule -- .git is a FILE there -- so it skipped all 43 and reported nothing
+    stripped. A count that can be read is the difference between "clean" and "never
+    looked".
+
+commit 4c43870500aa85ea7e38ea5866101ba8597569fd
+Author: claude (dev163 38f9745c-aed1-4fb4-b6ae-9899f20f8de2) <noreply@anthropic.com>
+Date:   Fri Aug 7 13:39:38 2026 -0400
+
+    tirdad: R-010 strict mode for build.sh
+
+    An eleven-line CodeQL autobuild helper: 'sudo --non-interactive make'.
+
+    No nounset traps, no word splitting, no guards. The change is the preamble
+    replacing 'set -x' + 'set -e'.
+
+    Dropping 'set -x' is the only user-visible difference, and it is wanted: this
+    runs in CI, where make already echoes its own commands, and the xtrace lines
+    were duplicating that in the build log.
+
+    Gate exit 0 in an ISOLATED checkout.
+
+    No harness: the script's entire body is one 'sudo make' invocation, so there is
+    no branch to compare and nothing a stub run could establish that reading the
+    eleven lines does not. Saying so is more honest than adding a case that would
+    pass whatever the code did.
+
+commit 1cc8821b32578210bf9735cce0285174c7105f65
+Merge: 7778b32 9dc0d08
+Author: claude (dev163 38f9745c-aed1-4fb4-b6ae-9899f20f8de2) <noreply@anthropic.com>
+Date:   Fri Aug 7 13:39:23 2026 -0400
+
+    Merge org-ai-assisted/master into ai
+
+    The branch was created from a stale local master, so its PR diff showed
+    master's newer commits -- including a changelog version bump -- as REMOVALS.
+    Merging rather than rebasing, per the no-history-rewrites rule.
+
+commit 9dc0d08fd7b73f922a2d65f56f752839b8f888ad
+Author: Patrick Schleizer <adrelanos@whonix.org>
+Date:   Sat Aug 1 08:44:20 2026 +0000
+
+    bumped changelog version
+
 commit 46afa9c1c5520d3fb8001ce67d0b12dec4bb642d
 Merge: c8c2da9 627b1cd
 Author: Patrick Schleizer <adrelanos@whonix.org>
